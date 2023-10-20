@@ -1,23 +1,26 @@
-// HINTS:
-// 1. Import express and axios
+//import modules
 import express from "express";
 import axios from "axios";
-// 2. Create an express app and set the port number.
+//set constants
 const app = express();
 const port = 3000;
 const url = "https://api.blockchain.com/v3/exchange/tickers/";
 
-// 3. Use the public folder for static files.
+//set static file
 app.use(express.static("public"));
 
+//get crypto prices else send error
 app.get("/", async (req, res) => {
+    try{
     const BTC = await axios.get(url + "BTC-USD");
     const ETH = await axios.get(url + "ETH-USD");
-    //const result = await axios.get(url + "/v4/matches?dateFrom=" + currentDate + "&dateTo=" + dateTo);
     const btcData = BTC.data;
     const ethData = ETH.data;
     console.log(btcData);
     res.render("index.ejs", {bitcoin: btcData, ethereum: ethData});
+    }catch(err){
+        res.render("index.ejs");
+    }
 });
 
 app.listen(port, () => {
